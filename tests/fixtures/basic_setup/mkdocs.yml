@@ -1,0 +1,10 @@
+site_name: Test SQLAlchemy Plugin
+site_description: Testing the SQLAlchemy documentation plugin
+
+plugins:
+  - sqlalchemy:
+      base_class: "basic_setup.models.Base"
+      app_path: "src"
+
+nav:
+  - Home: index.md
