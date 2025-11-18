@@ -1,1 +1,3 @@
+# MkDocs SqlAlchemy Plugin
+
 {% sqlalchemy %}

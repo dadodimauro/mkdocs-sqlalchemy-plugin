@@ -1,6 +1,7 @@
-from pathlib import Path
 import os
 import shutil
+from pathlib import Path
+
 from click.testing import CliRunner, Result
 from mkdocs.__main__ import build_command
 
@@ -69,7 +70,6 @@ def test_basic_setup(tmp_path: Path) -> None:
     assert output_dir.exists(), "Output directory does not exist."
 
     models_page = output_dir / "index.html"
-    print(models_page.read_text())
     assert models_page.exists(), "Models page was not generated."
 
     content = models_page.read_text()

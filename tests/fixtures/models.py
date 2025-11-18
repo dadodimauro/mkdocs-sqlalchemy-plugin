@@ -1,5 +1,3 @@
-"""Test SQLAlchemy models for the plugin."""
-
 from datetime import datetime
 
 from sqlalchemy import (

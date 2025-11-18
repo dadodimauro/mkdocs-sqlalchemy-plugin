@@ -9,9 +9,9 @@ Usage:
 """
 
 import argparse
+import subprocess
 import sys
 from pathlib import Path
-import subprocess
 
 
 def main():
@@ -70,7 +70,6 @@ def main():
 
     # Build the mkdocs serve command
     cmd = ["mkdocs", "serve", "-f", str(mkdocs_yml)]
-
 
     if args.dev_addr:
         cmd.extend(["--dev-addr", args.dev_addr])

@@ -1,0 +1,17 @@
+site_name: Test SQLAlchemy Plugin
+site_description: Testing the SQLAlchemy documentation plugin
+
+plugins:
+  - sqlalchemy:
+      base_class: "filter_fields.models.Base"
+      app_path: "src"
+      table_style:
+        fields:
+          - column
+          - type
+          - nullable
+
+nav:
+  - Home: index.md
+  - Users: users.md
+  - Posts: posts.md
