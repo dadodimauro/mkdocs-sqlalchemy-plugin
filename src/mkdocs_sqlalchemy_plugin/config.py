@@ -94,11 +94,13 @@ class DisplayConfig:
     Attributes:
         show_indexes (bool): Whether to show indexes.
         show_constraints (bool): Whether to show constraints.
+        show_sql (bool): Whether to show SQL DDL.
         group_by_schema (bool): Whether to group tables by schema.
     """
 
     show_indexes: bool = True
     show_constraints: bool = True
+    show_sql: bool = True
     group_by_schema: bool = False
 
 
@@ -114,6 +116,10 @@ class TableGenerationOptions:
         fields (list[str]): List of fields to include in the table.
         show_indexes (bool): Whether to show indexes.
         show_constraints (bool): Whether to show constraints.
+        show_sql (bool): Whether to show SQL DDL.
+        heading_level (AtxHeaderLevel): Markdown heading level for table titles.
+        schema_heading_level (AtxHeaderLevel): Heading level for schema titles.
+        text_align (Literal["left", "center", "right"]): Text alignment for table cells.
 
     Methods:
         from_style_and_display: Create options from style and display configs.
@@ -123,6 +129,7 @@ class TableGenerationOptions:
     fields: list[str] = field(default_factory=lambda: DEFAULT_FIELDS.copy())
     show_indexes: bool = True
     show_constraints: bool = True
+    show_sql: bool = False
     heading_level: AtxHeaderLevel = AtxHeaderLevel.HEADING
     schema_heading_level: AtxHeaderLevel = AtxHeaderLevel.HEADING
     text_align: Literal["left", "center", "right"] = "left"
@@ -164,6 +171,7 @@ class TableGenerationOptions:
             fields=style.fields.copy(),
             show_indexes=display.show_indexes,
             show_constraints=display.show_constraints,
+            show_sql=display.show_sql,
             heading_level=cls.int_to_heading_level(style.heading_level),
             schema_heading_level=cls.int_to_heading_level(style.schema_heading_level),
             text_align=cls.str_to_text_align(style.text_align),
@@ -202,6 +210,7 @@ class TableGenerationOptions:
             show_constraints=bool(
                 params.get("show_constraints", self.show_constraints)
             ),
+            show_sql=bool(params.get("show_sql", self.show_sql)),
             heading_level=heading_level,
             schema_heading_level=schema_heading_level,
             text_align=text_align,

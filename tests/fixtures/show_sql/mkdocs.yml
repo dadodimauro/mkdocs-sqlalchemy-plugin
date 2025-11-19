@@ -1,0 +1,15 @@
+site_name: Test SQLAlchemy Plugin
+site_description: Testing the SQLAlchemy documentation plugin
+
+theme:
+  name: material
+
+plugins:
+  - sqlalchemy:
+      base_class: "show_sql.models.Base"
+      app_path: "src"
+      display:
+        show_sql: true
+
+nav:
+  - Home: index.md

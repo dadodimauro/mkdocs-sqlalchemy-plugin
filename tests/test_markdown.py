@@ -13,6 +13,7 @@ from mkdocs_sqlalchemy_plugin.markdown import (
     _generate_column_values,
     _generate_constraints_section,
     _generate_indexes_section,
+    _generate_sql_ddl,
     generate_content_from_params,
     generate_table,
     generate_tables,
@@ -277,6 +278,25 @@ class TestGenerateConstraintsSection:
         constraints_markdown = _generate_constraints_section(test_table)
 
         assert "**Constraints:** None" in constraints_markdown
+
+
+class TestGenerateSQLDDL:
+    """Tests for _generate_sql_ddl function."""
+
+    def test_generate_sql_ddl(self):
+        """Test generating SQL DDL for a table."""
+
+        metadata = MetaData()
+        test_table = Table(
+            "test_table",
+            metadata,
+            Column("id", Integer, primary_key=True),
+            Column("name", String),
+        )
+
+        sql_ddl = _generate_sql_ddl(test_table)
+
+        assert "<summary>View SQL</summary>" in sql_ddl
 
 
 class TestGenerateTablesBySchema:
