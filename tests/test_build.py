@@ -285,7 +285,7 @@ def test_show_sql(tmp_path: Path) -> None:
     models_page = output_dir / "index.html"
     assert models_page.exists(), "Models page was not generated."
 
-    content = models_page.read_text()
+    content = models_page.read_text(encoding="utf-8")
     assert "users" in content, "User model not documented."
     assert "posts" in content, "Post model not documented."
     assert "user_profiles" in content, "UserProfile model not documented."
