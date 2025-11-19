@@ -204,3 +204,23 @@ def test_table_style(tmp_path: Path) -> None:
     assert '<h3 id="table-posts">Table: <code>posts</code></h3>' in content, (
         "Expected heading level h3 not found"
     )
+
+
+def test_theme(tmp_path: Path) -> None:
+    project_path = setup_clean_mkdocs_folder(Path("tests/fixtures/theme"), tmp_path)
+
+    result = build_docs_setup(project_path)
+    assert result.exit_code == 0, (
+        f"Build failed with exit code {result.exit_code}: {result.output}"
+    )
+
+    output_dir = project_path / "site"
+    assert output_dir.exists(), "Output directory does not exist."
+
+    models_page = output_dir / "index.html"
+    assert models_page.exists(), "Models page was not generated."
+
+    content = models_page.read_text()
+    assert "users" in content, "User model not documented."
+    assert "posts" in content, "Post model not documented."
+    assert "user_profiles" in content, "UserProfile model not documented."
