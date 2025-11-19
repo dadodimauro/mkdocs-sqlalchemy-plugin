@@ -5,10 +5,10 @@ from mdutils.tools.Table import Table
 from mdutils.tools.TextUtils import TextUtils
 from sqlalchemy import Column as SaColumn
 from sqlalchemy import Table as SaTable
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.sql.schema import DefaultGenerator
 from sqlalchemy import create_mock_engine
+from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.schema import CreateTable
+from sqlalchemy.sql.schema import DefaultGenerator
 
 from mkdocs_sqlalchemy_plugin.config import (
     PluginConfig,
