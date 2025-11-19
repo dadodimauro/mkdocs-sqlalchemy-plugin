@@ -3,6 +3,10 @@
 from dataclasses import dataclass, field
 from typing import Literal, cast
 
+from mdutils.tools.Header import AtxHeaderLevel
+
+from mkdocs_sqlalchemy_plugin.logger import logger
+
 FIELD = Literal[
     "column", "type", "nullable", "default", "primary_key", "unique", "foreign_key"
 ]
@@ -50,11 +54,15 @@ class TableStyleConfig:
         tick (str): Symbol for true/yes values.
         cross (str): Symbol for false/no values.
         fields (list[str]): List of fields to include in the table.
+        heading_level (AtxHeaderLevel): Markdown heading level for table titles.
+        text_align (Literal["left", "center", "right"]): Text alignment for table cells.
     """
 
     tick: str = DEFAULT_TICK
     cross: str = DEFAULT_CROSS
     fields: list[str] = field(default_factory=lambda: DEFAULT_FIELDS.copy())
+    heading_level: int = 2
+    text_align: str = "left"
 
 
 @dataclass
@@ -114,6 +122,36 @@ class TableGenerationOptions:
     fields: list[str] = field(default_factory=lambda: DEFAULT_FIELDS.copy())
     show_indexes: bool = True
     show_constraints: bool = True
+    heading_level: AtxHeaderLevel = AtxHeaderLevel.HEADING
+    text_align: Literal["left", "center", "right"] = "left"
+
+    @staticmethod
+    def int_to_heading_level(level: int) -> AtxHeaderLevel:
+        """Convert integer to AtxHeaderLevel."""
+        heading_level = AtxHeaderLevel.HEADING  # Default level 2
+        try:
+            heading_level_int = int(level)
+            if heading_level_int < 1 or heading_level_int > 6:
+                raise ValueError
+            heading_level = AtxHeaderLevel(heading_level_int)
+        except (ValueError, TypeError):
+            logger.warning(
+                f"Invalid heading_level '{level}' specified. "
+                "Must be an integer between 1 and 6. Using default."
+            )
+        return heading_level
+
+    @staticmethod
+    def str_to_text_align(align: str) -> Literal["left", "center", "right"]:
+        """Convert string to text alignment."""
+        align_lower = align.lower()
+        if align_lower in ["left", "center", "right"]:
+            return cast(Literal["left", "center", "right"], align_lower)
+        logger.warning(
+            f"Invalid text_align '{align}' specified. "
+            "Must be 'left', 'center', or 'right'. Using default 'left'."
+        )
+        return "left"
 
     @classmethod
     def from_style_and_display(
@@ -124,10 +162,12 @@ class TableGenerationOptions:
             fields=style.fields.copy(),
             show_indexes=display.show_indexes,
             show_constraints=display.show_constraints,
+            heading_level=cls.int_to_heading_level(style.heading_level),
+            text_align=cls.str_to_text_align(style.text_align),
         )
 
     def merge_with_tag_params(
-        self, params: dict[str, str | bool]
+        self, params: dict[str, str | int | bool]
     ) -> "TableGenerationOptions":
         """
         Create new options by merging with tag parameters.
@@ -142,12 +182,21 @@ class TableGenerationOptions:
             if parsed:
                 new_fields = parsed
 
+        heading_level_raw = params.get("heading_level", self.heading_level.value)
+        heading_level = self.int_to_heading_level(int(heading_level_raw))
+
+        text_align = self.str_to_text_align(
+            str(params.get("text_align", self.text_align))
+        )
+
         return TableGenerationOptions(
             fields=cast(list[str], new_fields),
             show_indexes=bool(params.get("show_indexes", self.show_indexes)),
             show_constraints=bool(
                 params.get("show_constraints", self.show_constraints)
             ),
+            heading_level=heading_level,
+            text_align=text_align,
         )
 
 

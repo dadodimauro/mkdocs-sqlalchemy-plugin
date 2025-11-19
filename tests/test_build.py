@@ -76,3 +76,131 @@ def test_basic_setup(tmp_path: Path) -> None:
     assert "users" in content, "User model not documented."
     assert "posts" in content, "Post model not documented."
     assert "user_profiles" in content, "UserProfile model not documented."
+
+
+def test_filter_fields(tmp_path: Path) -> None:
+    project_path = setup_clean_mkdocs_folder(
+        Path("tests/fixtures/filter_fields"), tmp_path
+    )
+
+    result = build_docs_setup(project_path)
+    assert result.exit_code == 0, (
+        f"Build failed with exit code {result.exit_code}: {result.output}"
+    )
+
+    output_dir = project_path / "site"
+
+    assert output_dir.exists(), "Output directory does not exist."
+
+    models_page = output_dir / "index.html"
+    assert models_page.exists(), "Models page was not generated."
+
+    user_page = output_dir / "users/index.html"
+    assert user_page.exists(), "User page was not generated."
+
+    content = user_page.read_text()
+    assert "column" in content, "Column 'column' should be documented."
+    assert "type" in content, "Column 'type' should be documented."
+    assert "nullable" in content, "Column 'nullable' should be documented."
+    assert "default" not in content, "Column 'default' should not be documented."
+
+    post_page = output_dir / "posts/index.html"
+    assert post_page.exists(), "Post page was not generated."
+
+    content = post_page.read_text()
+    assert "column" in content, "Column 'column' should be documented."
+    assert "unique" in content, "Column 'unique' should be documented."
+    assert "nullable" not in content, "Column 'nullable' should not be documented."
+
+
+def test_single_tables(tmp_path: Path) -> None:
+    project_path = setup_clean_mkdocs_folder(
+        Path("tests/fixtures/single_tables"), tmp_path
+    )
+
+    result = build_docs_setup(project_path)
+    assert result.exit_code == 0, (
+        f"Build failed with exit code {result.exit_code}: {result.output}"
+    )
+
+    output_dir = project_path / "site"
+
+    assert output_dir.exists(), "Output directory does not exist."
+
+    models_page = output_dir / "index.html"
+    assert models_page.exists(), "Models page was not generated."
+
+    user_page = output_dir / "users/index.html"
+    assert user_page.exists(), "User page was not generated."
+
+    content = user_page.read_text()
+    assert "users" in content, "User table not documented."
+
+    post_page = output_dir / "posts/index.html"
+    assert post_page.exists(), "Post page was not generated."
+
+    content = post_page.read_text()
+    assert "posts" in content, "Post table not documented."
+
+
+def test_table_not_found(tmp_path: Path) -> None:
+    project_path = setup_clean_mkdocs_folder(
+        Path("tests/fixtures/table_not_found"), tmp_path
+    )
+
+    result = build_docs_setup(project_path)
+    assert result.exit_code == 0, (
+        f"Build failed with exit code {result.exit_code}: {result.output}"
+    )
+
+    output_dir = project_path / "site"
+
+    assert output_dir.exists(), "Output directory does not exist."
+
+    models_page = output_dir / "index.html"
+    assert models_page.exists(), "Models page was not generated."
+
+    content = models_page.read_text()
+    assert "<!-- Table 'not-found' not found -->" in content, (
+        "Expected 'not found' comment"
+    )
+
+
+def test_table_style(tmp_path: Path) -> None:
+    project_path = setup_clean_mkdocs_folder(
+        Path("tests/fixtures/table_style"), tmp_path
+    )
+
+    result = build_docs_setup(project_path)
+    assert result.exit_code == 0, (
+        f"Build failed with exit code {result.exit_code}: {result.output}"
+    )
+
+    output_dir = project_path / "site"
+
+    assert output_dir.exists(), "Output directory does not exist."
+
+    models_page = output_dir / "index.html"
+    assert models_page.exists(), "Models page was not generated."
+
+    user_page = output_dir / "users/index.html"
+    assert user_page.exists(), "User page was not generated."
+
+    content = user_page.read_text()
+    assert 'style="text-align: left;"' in content, (
+        "Expected text alignment style not found"
+    )
+    assert '<h2 id="table-users">Table: <code>users</code></h2>' in content, (
+        "Expected heading level h2 not found"
+    )
+
+    post_page = output_dir / "posts/index.html"
+    assert post_page.exists(), "Post page was not generated."
+
+    content = post_page.read_text()
+    assert 'style="text-align: center;"' in content, (
+        "Expected text alignment style not found"
+    )
+    assert '<h3 id="table-posts">Table: <code>posts</code></h3>' in content, (
+        "Expected heading level h3 not found"
+    )

@@ -29,13 +29,44 @@ class TestTableGenerationOptions:
             fields=["column", "type"], show_indexes=True, show_constraints=False
         )
 
-        tag_params = {"fields": "column,type,nullable", "show_indexes": False}
+        tag_params = {
+            "fields": "column,type,nullable",
+            "show_indexes": False,
+            "heading_level": 3,
+            "text_align": "center",
+        }
 
         merged_options = initial_options.merge_with_tag_params(tag_params)
 
         assert merged_options.fields == ["column", "type", "nullable"]
         assert merged_options.show_indexes is False
         assert merged_options.show_constraints is False  # unchanged
+        assert merged_options.heading_level.value == 3
+        assert merged_options.text_align == "center"
+
+    def test_merge_with_tag_params_error_heading_level(self):
+        """Test merging options with invalid heading level in tag parameters."""
+        initial_options = TableGenerationOptions(
+            fields=["column", "type"], show_indexes=True, show_constraints=False
+        )
+
+        tag_params: dict[str, int | str | bool] = {"heading_level": 0}
+
+        merged_options = initial_options.merge_with_tag_params(tag_params)
+
+        assert merged_options.heading_level == initial_options.heading_level
+
+    def test_merge_with_tag_params_error_text_align(self):
+        """Test merging options with invalid text alignment in tag parameters."""
+        initial_options = TableGenerationOptions(
+            fields=["column", "type"], show_indexes=True, show_constraints=False
+        )
+
+        tag_params: dict[str, int | str | bool] = {"text_align": "invalid"}
+
+        merged_options = initial_options.merge_with_tag_params(tag_params)
+
+        assert merged_options.heading_level == initial_options.heading_level
 
 
 class TestPluginConfig:

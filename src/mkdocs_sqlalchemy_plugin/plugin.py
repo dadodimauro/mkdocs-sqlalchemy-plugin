@@ -43,6 +43,8 @@ class TableStyleConfig(base.Config):
     tick = c.Type(str, default=DEFAULT_TICK)
     cross = c.Type(str, default=DEFAULT_CROSS)
     fields = c.ListOfItems(c.Type(str), default=DEFAULT_FIELDS)
+    heading_level = c.Type(int, default=2)
+    text_align = c.Type(str, default="left")
 
 
 class FilterConfigSchema(base.Config):
@@ -71,7 +73,7 @@ class SqlAlchemyPluginConfig(base.Config):
     display = c.SubConfig(DisplayConfigSchema)
 
 
-class SqlAlchemyPlugin(BasePlugin[SqlAlchemyPluginConfig]):
+class SqlAlchemyPlugin(BasePlugin[SqlAlchemyPluginConfig]):  # pragma: no cover
     """MkDocs plugin for documenting SQLAlchemy models."""
 
     def on_config(self, config: MkDocsConfig) -> MkDocsConfig:
@@ -155,6 +157,8 @@ class SqlAlchemyPlugin(BasePlugin[SqlAlchemyPluginConfig]):
                 tick=self.config.table_style.tick,
                 cross=self.config.table_style.cross,
                 fields=list(self.config.table_style.fields),
+                heading_level=self.config.table_style.heading_level,
+                text_align=self.config.table_style.text_align,
             ),
             filter=FilterConfig(
                 include_tables=self.config.filter.include_tables,

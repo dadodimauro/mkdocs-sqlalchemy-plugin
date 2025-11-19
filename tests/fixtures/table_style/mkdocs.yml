@@ -1,0 +1,17 @@
+site_name: Test SQLAlchemy Plugin
+site_description: Testing the SQLAlchemy documentation plugin
+
+plugins:
+  - sqlalchemy:
+      base_class: "table_style.models.Base"
+      app_path: "src"
+      table_style:
+        tick: "y"
+        cross: "n"
+        heading_level: 2
+        text_align: left
+
+nav:
+  - Home: index.md
+  - Users: users.md
+  - Posts: posts.md

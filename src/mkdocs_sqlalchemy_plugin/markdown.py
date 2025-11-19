@@ -1,8 +1,7 @@
-import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from mdutils.tools.Header import AtxHeaderLevel, Header
+from mdutils.tools.Header import Header
 from mdutils.tools.Table import Table
 from mdutils.tools.TextUtils import TextUtils
 
@@ -10,6 +9,7 @@ from mkdocs_sqlalchemy_plugin.config import (
     PluginConfig,
     TableGenerationOptions,
 )
+from mkdocs_sqlalchemy_plugin.logger import logger
 from mkdocs_sqlalchemy_plugin.utils import parse_table_list
 
 if TYPE_CHECKING:
@@ -17,22 +17,6 @@ if TYPE_CHECKING:
     from sqlalchemy import Table as SaTable
     from sqlalchemy.orm import DeclarativeBase
     from sqlalchemy.sql.schema import DefaultGenerator
-
-
-class PluginLogFilter(logging.Filter):
-    """Add a prefix to all log messages."""
-
-    def __init__(self, prefix: str = "mkdocs_sqlalchemy_plugin"):
-        super().__init__()
-        self.prefix = prefix
-
-    def filter(self, record: logging.LogRecord) -> bool:
-        record.msg = f"{self.prefix}: {record.msg}"
-        return True
-
-
-logger = logging.getLogger("mkdocs.plugins.mkdocs_sqlalchemy_plugin")
-logger.addFilter(PluginLogFilter())
 
 
 @dataclass
@@ -159,11 +143,13 @@ def generate_table(
 
     output = []
 
-    # Table header
-    logger.debug(f"Generating header for table '{tablename}'")
+    # Table header - use configured heading level
+    logger.debug(
+        f"Generating header for table '{tablename}' at level {options.heading_level}"
+    )
     output.append(
         Header.atx(
-            level=AtxHeaderLevel.HEADING,
+            level=options.heading_level,
             title=f"Table: {TextUtils.inline_code(table.name)}",
         )
     )
@@ -181,7 +167,7 @@ def generate_table(
             columns=len(options.fields),
             rows=len(table.columns) + 1,
             text=text_list,
-            text_align="center",
+            text_align=options.text_align,
         )
     )
 

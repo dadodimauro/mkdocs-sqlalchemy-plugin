@@ -1,3 +1,3 @@
 # MkDocs SqlAlchemy Plugin
 
-{% sqlalchemy table="not-fount" %}
+{% sqlalchemy table="not-found" %}
