@@ -1,11 +1,13 @@
 import importlib
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from mkdocs.config import base
 from mkdocs.config import config_options as c
+from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.plugins import BasePlugin, get_plugin_logger
+from mkdocs.structure.files import Files
+from mkdocs.structure.pages import Page
 from sqlalchemy.orm import DeclarativeBase
 
 from mkdocs_sqlalchemy_plugin.config import (
@@ -27,12 +29,6 @@ from mkdocs_sqlalchemy_plugin.markdown import (
     generate_content_from_params,
 )
 from mkdocs_sqlalchemy_plugin.utils import match_tag_regex, parse_tag_parameters
-
-if TYPE_CHECKING:
-    from mkdocs.config.defaults import MkDocsConfig
-    from mkdocs.structure.files import Files
-    from mkdocs.structure.pages import Page
-
 
 logger = get_plugin_logger(__name__)
 

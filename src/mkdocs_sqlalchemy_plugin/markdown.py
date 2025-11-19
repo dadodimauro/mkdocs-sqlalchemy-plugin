@@ -1,9 +1,12 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
 
 from mdutils.tools.Header import Header
 from mdutils.tools.Table import Table
 from mdutils.tools.TextUtils import TextUtils
+from sqlalchemy import Column as SaColumn
+from sqlalchemy import Table as SaTable
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.sql.schema import DefaultGenerator
 
 from mkdocs_sqlalchemy_plugin.config import (
     PluginConfig,
@@ -11,12 +14,6 @@ from mkdocs_sqlalchemy_plugin.config import (
 )
 from mkdocs_sqlalchemy_plugin.logger import logger
 from mkdocs_sqlalchemy_plugin.utils import parse_table_list
-
-if TYPE_CHECKING:
-    from sqlalchemy import Column as SaColumn
-    from sqlalchemy import Table as SaTable
-    from sqlalchemy.orm import DeclarativeBase
-    from sqlalchemy.sql.schema import DefaultGenerator
 
 
 @dataclass
