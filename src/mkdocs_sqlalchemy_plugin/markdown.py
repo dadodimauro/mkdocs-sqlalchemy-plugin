@@ -5,7 +5,9 @@ from mdutils.tools.Table import Table
 from mdutils.tools.TextUtils import TextUtils
 from sqlalchemy import Column as SaColumn
 from sqlalchemy import Table as SaTable
+from sqlalchemy import create_mock_engine
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.schema import CreateTable
 from sqlalchemy.sql.schema import DefaultGenerator
 
 from mkdocs_sqlalchemy_plugin.config import (
@@ -173,6 +175,10 @@ def generate_table(
     )
 
     # Optional sections
+    if options.show_sql:
+        logger.debug(f"Generating SQL DDL for '{tablename}'")
+        output.append(_generate_sql_ddl(table, dialect=options.sql_dialect))
+
     if options.show_indexes:
         logger.debug(f"Generating indexes section for '{tablename}'")
         output.append(_generate_indexes_section(table))
@@ -276,6 +282,32 @@ def _generate_constraints_section(table: SaTable) -> str:
         logger.debug(f"    Constraint '{constraint_name}': type={constraint_type}")
 
     return "\n".join(lines) + "\n"
+
+
+def _generate_sql_ddl(table: SaTable, dialect: str = "postgresql") -> str:
+    """Generate the SQL DDL for a table."""
+
+    def dump(sql, *multiparams, **params):  # pragma: no cover
+        return sql.compile(dialect=engine.dialect)
+
+    try:
+        engine = create_mock_engine(f"{dialect}://", dump)
+        ddl = CreateTable(table).compile(engine)
+
+        # DO NOT CHANGE INDENTATION
+        return f"""
+<details markdown="1">
+<summary>View SQL</summary>
+
+```sql
+{ddl}
+```
+
+</details>
+"""
+    except Exception as e:  # pragma: no cover
+        logger.error(f"Failed to generate SQL DDL for table '{table.name}': {e}")
+        return f"<!-- Error generating SQL DDL for table '{table.name}': {e} -->"
 
 
 def generate_tables(
