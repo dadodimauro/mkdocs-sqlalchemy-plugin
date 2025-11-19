@@ -72,7 +72,7 @@ def test_basic_setup(tmp_path: Path) -> None:
     models_page = output_dir / "index.html"
     assert models_page.exists(), "Models page was not generated."
 
-    content = models_page.read_text()
+    content = models_page.read_text(encoding="utf-8")
     assert "users" in content, "User model not documented."
     assert "posts" in content, "Post model not documented."
     assert "user_profiles" in content, "UserProfile model not documented."
@@ -98,7 +98,7 @@ def test_filter_fields(tmp_path: Path) -> None:
     user_page = output_dir / "users/index.html"
     assert user_page.exists(), "User page was not generated."
 
-    content = user_page.read_text()
+    content = user_page.read_text(encoding="utf-8")
     assert "column" in content, "Column 'column' should be documented."
     assert "type" in content, "Column 'type' should be documented."
     assert "nullable" in content, "Column 'nullable' should be documented."
@@ -107,7 +107,7 @@ def test_filter_fields(tmp_path: Path) -> None:
     post_page = output_dir / "posts/index.html"
     assert post_page.exists(), "Post page was not generated."
 
-    content = post_page.read_text()
+    content = post_page.read_text(encoding="utf-8")
     assert "column" in content, "Column 'column' should be documented."
     assert "unique" in content, "Column 'unique' should be documented."
     assert "nullable" not in content, "Column 'nullable' should not be documented."
@@ -133,13 +133,13 @@ def test_single_tables(tmp_path: Path) -> None:
     user_page = output_dir / "users/index.html"
     assert user_page.exists(), "User page was not generated."
 
-    content = user_page.read_text()
+    content = user_page.read_text(encoding="utf-8")
     assert "users" in content, "User table not documented."
 
     post_page = output_dir / "posts/index.html"
     assert post_page.exists(), "Post page was not generated."
 
-    content = post_page.read_text()
+    content = post_page.read_text(encoding="utf-8")
     assert "posts" in content, "Post table not documented."
 
 
@@ -160,7 +160,7 @@ def test_table_not_found(tmp_path: Path) -> None:
     models_page = output_dir / "index.html"
     assert models_page.exists(), "Models page was not generated."
 
-    content = models_page.read_text()
+    content = models_page.read_text(encoding="utf-8")
     assert "<!-- Table 'not-found' not found -->" in content, (
         "Expected 'not found' comment"
     )
@@ -186,7 +186,7 @@ def test_table_style(tmp_path: Path) -> None:
     user_page = output_dir / "users/index.html"
     assert user_page.exists(), "User page was not generated."
 
-    content = user_page.read_text()
+    content = user_page.read_text(encoding="utf-8")
     assert 'style="text-align: left;"' in content, (
         "Expected text alignment style not found"
     )
@@ -197,7 +197,7 @@ def test_table_style(tmp_path: Path) -> None:
     post_page = output_dir / "posts/index.html"
     assert post_page.exists(), "Post page was not generated."
 
-    content = post_page.read_text()
+    content = post_page.read_text(encoding="utf-8")
     assert 'style="text-align: center;"' in content, (
         "Expected text alignment style not found"
     )
@@ -220,7 +220,7 @@ def test_theme(tmp_path: Path) -> None:
     models_page = output_dir / "index.html"
     assert models_page.exists(), "Models page was not generated."
 
-    content = models_page.read_text()
+    content = models_page.read_text(encoding="utf-8")
     assert "users" in content, "User model not documented."
     assert "posts" in content, "Post model not documented."
     assert "user_profiles" in content, "UserProfile model not documented."
@@ -240,7 +240,7 @@ def test_by_schema(tmp_path: Path) -> None:
     models_page = output_dir / "index.html"
     assert models_page.exists(), "Models page was not generated."
 
-    content = models_page.read_text()
+    content = models_page.read_text(encoding="utf-8")
     assert "users" in content, "User model not documented."
     assert "posts" in content, "Post model not documented."
     assert "user_profiles" in content, "UserProfile model not documented."
@@ -264,7 +264,7 @@ def test_by_schema_default(tmp_path: Path) -> None:
     models_page = output_dir / "index.html"
     assert models_page.exists(), "Models page was not generated."
 
-    content = models_page.read_text()
+    content = models_page.read_text(encoding="utf-8")
     assert "users" in content, "User model not documented."
     assert "posts" in content, "Post model not documented."
     assert "user_profiles" in content, "UserProfile model not documented."
