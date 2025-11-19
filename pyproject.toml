@@ -34,7 +34,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--cov=mkdocs_sqlalchemy_plugin --cov-report=xml --html=test_report.html --self-contained-html"
+addopts = "--cov=mkdocs_sqlalchemy_plugin --cov-report=term --cov-report=xml --html=test_report.html --self-contained-html"
 generate_report_on_test = true
 
 [tool.coverage.report]
