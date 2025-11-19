@@ -240,11 +240,11 @@ class SqlAlchemyPlugin(BasePlugin[SqlAlchemyPluginConfig]):  # pragma: no cover
             logger.debug(f"Importing module: {module_path}")
             module = importlib.import_module(module_path)
             logger.debug(f"Successfully imported module: {module_path}")
-        except ImportError as e:
+        except Exception as e:
             logger.error(
-                f"Failed to import module '{module_path}': {e}. "
-                f"Make sure the module is in your Python path. "
-                f"Current sys.path: {sys.path}"
+                f"Failed to import module '{module_path}'. "
+                f"The module may contain syntax errors or missing dependencies.\n"
+                f"Error details: {type(e).__name__}: {e}"
             )
             return None
 
