@@ -177,7 +177,7 @@ def generate_table(
     # Optional sections
     if options.show_sql:
         logger.debug(f"Generating SQL DDL for '{tablename}'")
-        output.append(_generate_sql_ddl(table))
+        output.append(_generate_sql_ddl(table, dialect=options.sql_dialect))
 
     if options.show_indexes:
         logger.debug(f"Generating indexes section for '{tablename}'")
@@ -284,14 +284,14 @@ def _generate_constraints_section(table: SaTable) -> str:
     return "\n".join(lines) + "\n"
 
 
-def _generate_sql_ddl(table: SaTable) -> str:
+def _generate_sql_ddl(table: SaTable, dialect: str = "postgresql") -> str:
     """Generate the SQL DDL for a table."""
 
     def dump(sql, *multiparams, **params):  # pragma: no cover
         return sql.compile(dialect=engine.dialect)
 
     try:
-        engine = create_mock_engine("postgresql://", dump)
+        engine = create_mock_engine(f"{dialect}://", dump)
         ddl = CreateTable(table).compile(engine)
 
         # DO NOT CHANGE INDENTATION

@@ -95,12 +95,14 @@ class DisplayConfig:
         show_indexes (bool): Whether to show indexes.
         show_constraints (bool): Whether to show constraints.
         show_sql (bool): Whether to show SQL DDL.
+        sql_dialect (str): SQL dialect for formatting SQL DDL.
         group_by_schema (bool): Whether to group tables by schema.
     """
 
     show_indexes: bool = True
     show_constraints: bool = True
     show_sql: bool = True
+    sql_dialect: str = "postgresql"
     group_by_schema: bool = False
 
 
@@ -130,6 +132,7 @@ class TableGenerationOptions:
     show_indexes: bool = True
     show_constraints: bool = True
     show_sql: bool = False
+    sql_dialect: str = "postgresql"
     heading_level: AtxHeaderLevel = AtxHeaderLevel.HEADING
     schema_heading_level: AtxHeaderLevel = AtxHeaderLevel.HEADING
     text_align: Literal["left", "center", "right"] = "left"
@@ -172,6 +175,7 @@ class TableGenerationOptions:
             show_indexes=display.show_indexes,
             show_constraints=display.show_constraints,
             show_sql=display.show_sql,
+            sql_dialect=display.sql_dialect,
             heading_level=cls.int_to_heading_level(style.heading_level),
             schema_heading_level=cls.int_to_heading_level(style.schema_heading_level),
             text_align=cls.str_to_text_align(style.text_align),

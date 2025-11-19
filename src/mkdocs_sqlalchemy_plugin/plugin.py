@@ -57,6 +57,7 @@ class DisplayConfigSchema(base.Config):
     show_indexes = c.Type(bool, default=True)
     show_constraints = c.Type(bool, default=True)
     show_sql = c.Type(bool, default=False)
+    sql_dialect = c.Type(str, default="postgresql")
     group_by_schema = c.Type(bool, default=False)
 
 
@@ -122,6 +123,7 @@ class SqlAlchemyPlugin(BasePlugin[SqlAlchemyPluginConfig]):  # pragma: no cover
         logger.debug(f"  - Show indexes: {config.display.show_indexes}")
         logger.debug(f"  - Show constraints: {config.display.show_constraints}")
         logger.debug(f"  - Show SQL: {config.display.show_sql}")
+        logger.debug(f"  - SQL Dialect: {config.display.sql_dialect}")
         logger.debug(f"  - Group by schema: {config.display.group_by_schema}")
 
         if config.filter.include_tables:
@@ -168,6 +170,7 @@ class SqlAlchemyPlugin(BasePlugin[SqlAlchemyPluginConfig]):  # pragma: no cover
                 show_indexes=self.config.display.show_indexes,
                 show_constraints=self.config.display.show_constraints,
                 show_sql=self.config.display.show_sql,
+                sql_dialect=self.config.display.sql_dialect,
                 group_by_schema=self.config.display.group_by_schema,
             ),
         )
