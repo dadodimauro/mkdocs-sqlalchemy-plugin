@@ -224,3 +224,48 @@ def test_theme(tmp_path: Path) -> None:
     assert "users" in content, "User model not documented."
     assert "posts" in content, "Post model not documented."
     assert "user_profiles" in content, "UserProfile model not documented."
+
+
+def test_by_schema(tmp_path: Path) -> None:
+    project_path = setup_clean_mkdocs_folder(Path("tests/fixtures/by_schema"), tmp_path)
+
+    result = build_docs_setup(project_path)
+    assert result.exit_code == 0, (
+        f"Build failed with exit code {result.exit_code}: {result.output}"
+    )
+
+    output_dir = project_path / "site"
+    assert output_dir.exists(), "Output directory does not exist."
+
+    models_page = output_dir / "index.html"
+    assert models_page.exists(), "Models page was not generated."
+
+    content = models_page.read_text()
+    assert "users" in content, "User model not documented."
+    assert "posts" in content, "Post model not documented."
+    assert "user_profiles" in content, "UserProfile model not documented."
+    assert "profiles" in content, "Schema 'profiles' not documented."
+    assert "blog" in content, "Schema 'blog' not documented."
+
+
+def test_by_schema_default(tmp_path: Path) -> None:
+    project_path = setup_clean_mkdocs_folder(
+        Path("tests/fixtures/by_schema_default"), tmp_path
+    )
+
+    result = build_docs_setup(project_path)
+    assert result.exit_code == 0, (
+        f"Build failed with exit code {result.exit_code}: {result.output}"
+    )
+
+    output_dir = project_path / "site"
+    assert output_dir.exists(), "Output directory does not exist."
+
+    models_page = output_dir / "index.html"
+    assert models_page.exists(), "Models page was not generated."
+
+    content = models_page.read_text()
+    assert "users" in content, "User model not documented."
+    assert "posts" in content, "Post model not documented."
+    assert "user_profiles" in content, "UserProfile model not documented."
+    assert "default" in content, "Schema 'default' not documented."

@@ -63,7 +63,7 @@ def parse_table_list(tables_str: str | None) -> list[str] | None:
     return [table.strip() for table in str(tables_str).split(",")]
 
 
-def parse_tag_parameters(params_str: str | None) -> dict[str, str | bool]:
+def parse_tag_parameters(params_str: str | None) -> dict[str, int | str | bool]:
     """
     Parse tag parameters from string.
 
@@ -92,7 +92,7 @@ def parse_tag_parameters(params_str: str | None) -> dict[str, str | bool]:
     if not params_str:
         return {}
 
-    params: dict[str, str | bool] = {}
+    params: dict[str, int | str | bool] = {}
 
     # Match key="value" patterns (string parameters with quotes)
     for match in re.finditer(r'(\w+)="([^"]*)"', params_str):

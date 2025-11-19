@@ -35,6 +35,11 @@ class SqlAlchemyPluginContext:
     base_class: type[DeclarativeBase]
     plugin_config: PluginConfig
 
+    @property
+    def tables(self) -> list[SaTable]:
+        """Get all tables from the base class metadata."""
+        return self.base_class.metadata.sorted_tables
+
     def get_filtered_tables(
         self,
         include_tables: list[str] | None = None,
@@ -50,8 +55,7 @@ class SqlAlchemyPluginContext:
             List of filtered tables
         """
         logger.debug("Filtering tables from metadata")
-        all_tables = self.base_class.metadata.sorted_tables
-        logger.debug(f"Total tables in metadata: {len(all_tables)}")
+        logger.debug(f"Total tables in metadata: {len(self.tables)}")
 
         # Determine final include list (tag overrides config)
         final_include = (
@@ -72,7 +76,7 @@ class SqlAlchemyPluginContext:
 
         filtered = []
         excluded_count = 0
-        for table in all_tables:
+        for table in self.tables:
             # Check include list
             if final_include and table.name not in final_include:
                 logger.debug(f"  Skipping table '{table.name}' (not in include list)")
@@ -90,7 +94,7 @@ class SqlAlchemyPluginContext:
 
         logger.info(
             f"Filtered tables: {len(filtered)} included, {excluded_count} excluded "
-            f"(total: {len(all_tables)})"
+            f"(total: {len(self.tables)})"
         )
         if filtered:
             logger.debug(f"Included table names: {[t.name for t in filtered]}")
@@ -336,8 +340,85 @@ def generate_tables(
     return result
 
 
+def generate_tables_by_schema(
+    context: SqlAlchemyPluginContext,
+    include_tables: list[str] | None = None,
+    exclude_tables: list[str] | None = None,
+    options: TableGenerationOptions | None = None,
+    sort_by: str = "name",
+) -> str:
+    """Generate documentation for multiple tables by schema.
+
+    Args:
+        context: Plugin context
+        include_tables: Only include these tables (overrides config)
+        exclude_tables: Also exclude these tables (merged with config)
+        options: Generation options for each table
+        sort_by: How to sort tables ('name' supported)
+
+    Returns:
+        Markdown documentation for all filtered tables (grouped by schema)
+    """
+    logger.info("Generating documentation for multiple tables by schema")
+    logger.debug(f"Sort by: {sort_by}")
+
+    filtered_tables = context.get_filtered_tables(include_tables, exclude_tables)
+
+    if not filtered_tables:
+        logger.warning("No tables match the filter criteria")
+        return "<!-- No tables to document -->"
+
+    if sort_by == "name":
+        filtered_tables.sort(key=lambda t: t.name)
+        logger.debug("Tables sorted by name")
+
+    if options is None:
+        options = context.plugin_config.get_generation_options()
+        logger.debug("Using default generation options")
+
+    table_map: dict[str, list[SaTable]] = {}
+    for table in filtered_tables:
+        schema = table.schema or "default"
+        table_map.setdefault(schema, []).append(table)
+
+    logger.info(f"Generating documentation for {len(filtered_tables)} table(s)")
+    output = []
+    for schema, tables in table_map.items():
+        logger.info(f"Processing schema: '{schema}'")
+        output.append(
+            Header.atx(
+                level=options.schema_heading_level,
+                title=f"Schema: {TextUtils.inline_code(schema)}",
+            )
+        )
+        for idx, table in enumerate(tables, 1):
+            logger.debug(
+                f"Processing table {idx}/{len(filtered_tables)}: '{table.name}'"
+            )
+            try:
+                table_name = (
+                    f"{schema}.{table.name}" if schema != "default" else table.name
+                )
+                table_doc = generate_table(context, table_name, options)
+                output.append(table_doc)
+            except Exception as e:  # pragma: no cover
+                logger.error(
+                    f"Failed to generate documentation for table '{table.name}': {e}",
+                    exc_info=True,
+                )
+                output.append(
+                    f"<!-- Error generating documentation for table '{table.name}': {e} -->"
+                )
+
+    result = "\n\n".join(output)
+    logger.info(
+        f"Successfully generated documentation for {len(output)} table(s) ({len(result)} characters)"
+    )
+    return result
+
+
 def generate_content_from_params(
-    context: SqlAlchemyPluginContext, params: dict[str, str | bool]
+    context: SqlAlchemyPluginContext, params: dict[str, int | str | bool]
 ) -> str:
     """Generate markdown content based on tag parameters.
 
@@ -374,6 +455,15 @@ def generate_content_from_params(
         logger.debug(f"Tag-level include_tables: {include_tables}")
     if exclude_tables:
         logger.debug(f"Tag-level exclude_tables: {exclude_tables}")
+
+    if context.plugin_config.display.group_by_schema is True:
+        return generate_tables_by_schema(
+            context,
+            include_tables=include_tables,
+            exclude_tables=exclude_tables,
+            options=options,
+            sort_by=sort_by,
+        )
 
     return generate_tables(
         context,

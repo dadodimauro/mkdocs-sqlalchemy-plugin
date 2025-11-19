@@ -61,7 +61,8 @@ class TableStyleConfig:
     tick: str = DEFAULT_TICK
     cross: str = DEFAULT_CROSS
     fields: list[str] = field(default_factory=lambda: DEFAULT_FIELDS.copy())
-    heading_level: int = 2
+    heading_level: int = 3
+    schema_heading_level: int = 2
     text_align: str = "left"
 
 
@@ -123,6 +124,7 @@ class TableGenerationOptions:
     show_indexes: bool = True
     show_constraints: bool = True
     heading_level: AtxHeaderLevel = AtxHeaderLevel.HEADING
+    schema_heading_level: AtxHeaderLevel = AtxHeaderLevel.HEADING
     text_align: Literal["left", "center", "right"] = "left"
 
     @staticmethod
@@ -163,6 +165,7 @@ class TableGenerationOptions:
             show_indexes=display.show_indexes,
             show_constraints=display.show_constraints,
             heading_level=cls.int_to_heading_level(style.heading_level),
+            schema_heading_level=cls.int_to_heading_level(style.schema_heading_level),
             text_align=cls.str_to_text_align(style.text_align),
         )
 
@@ -182,8 +185,12 @@ class TableGenerationOptions:
             if parsed:
                 new_fields = parsed
 
-        heading_level_raw = params.get("heading_level", self.heading_level.value)
-        heading_level = self.int_to_heading_level(int(heading_level_raw))
+        heading_level = self.int_to_heading_level(
+            int(params.get("heading_level", self.heading_level.value))
+        )
+        schema_heading_level = self.int_to_heading_level(
+            int(params.get("schema_heading_level", self.schema_heading_level.value))
+        )
 
         text_align = self.str_to_text_align(
             str(params.get("text_align", self.text_align))
@@ -196,6 +203,7 @@ class TableGenerationOptions:
                 params.get("show_constraints", self.show_constraints)
             ),
             heading_level=heading_level,
+            schema_heading_level=schema_heading_level,
             text_align=text_align,
         )
 

@@ -16,6 +16,7 @@ from mkdocs_sqlalchemy_plugin.markdown import (
     generate_content_from_params,
     generate_table,
     generate_tables,
+    generate_tables_by_schema,
 )
 
 from .fixtures.models import Base, User
@@ -276,6 +277,43 @@ class TestGenerateConstraintsSection:
         constraints_markdown = _generate_constraints_section(test_table)
 
         assert "**Constraints:** None" in constraints_markdown
+
+
+class TestGenerateTablesBySchema:
+    """Tests for generate_tables_by_schema function."""
+
+    def test_generate_tables_by_schema(self):
+        """Test generating markdown for all tables."""
+
+        plugin_config = PluginConfig(base_class="Base")
+
+        context = SqlAlchemyPluginContext(
+            base_class=Base,
+            plugin_config=plugin_config,
+        )
+
+        tables_markdown = generate_tables_by_schema(context=context)
+
+        assert "## Table: ``users``" in tables_markdown
+        assert "## Table: ``posts``" in tables_markdown
+        assert "## Table: ``user_profiles``" in tables_markdown
+
+    def test_generate_tables_by_schema_all_unfiltered(self):
+        """Test generating markdown for all tables with filters that exclude all."""
+
+        plugin_config = PluginConfig(
+            base_class="Base",
+            filter=FilterConfig(exclude_tables=["users", "posts", "user_profiles"]),
+        )
+
+        context = SqlAlchemyPluginContext(
+            base_class=Base,
+            plugin_config=plugin_config,
+        )
+
+        tables_markdown = generate_tables_by_schema(context=context)
+
+        assert "<!-- No tables to document -->" in tables_markdown
 
 
 class TestGenerateTables:

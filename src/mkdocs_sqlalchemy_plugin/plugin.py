@@ -43,7 +43,8 @@ class TableStyleConfig(base.Config):
     tick = c.Type(str, default=DEFAULT_TICK)
     cross = c.Type(str, default=DEFAULT_CROSS)
     fields = c.ListOfItems(c.Type(str), default=DEFAULT_FIELDS)
-    heading_level = c.Type(int, default=2)
+    heading_level = c.Type(int, default=3)
+    schema_heading_level = c.Type(int, default=2)
     text_align = c.Type(str, default="left")
 
 
@@ -158,6 +159,7 @@ class SqlAlchemyPlugin(BasePlugin[SqlAlchemyPluginConfig]):  # pragma: no cover
                 cross=self.config.table_style.cross,
                 fields=list(self.config.table_style.fields),
                 heading_level=self.config.table_style.heading_level,
+                schema_heading_level=self.config.table_style.schema_heading_level,
                 text_align=self.config.table_style.text_align,
             ),
             filter=FilterConfig(
