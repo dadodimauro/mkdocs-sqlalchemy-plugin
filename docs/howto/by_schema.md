@@ -26,3 +26,5 @@ In your markdown file:
 ```
 
 The output will be grouped by schema, with a heading for each schema.
+
+## Result

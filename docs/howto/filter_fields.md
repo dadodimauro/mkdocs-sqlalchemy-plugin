@@ -29,3 +29,5 @@ In your markdown file:
 ```
 
 This will generate tables showing only the Column Name, Type, and Nullable status.
+
+## Result

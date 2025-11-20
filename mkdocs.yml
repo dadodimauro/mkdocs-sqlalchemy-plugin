@@ -36,6 +36,9 @@ theme:
 
 plugins:
   - search
+  - gen-files:
+      scripts:
+        - scripts/update_howto_examples.py
 
 markdown_extensions:
   - toc: null

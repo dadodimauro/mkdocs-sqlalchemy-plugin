@@ -30,3 +30,5 @@ You can document individual tables by specifying the `table` parameter in the ta
 
 {% sqlalchemy table="posts" %}
 ```
+
+## Result

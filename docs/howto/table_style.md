@@ -29,3 +29,5 @@ In your markdown file:
 ```
 
 This will render tables with "y" and "n" instead of icons, use level 2 headings for table names, and left-align text.
+
+## Result

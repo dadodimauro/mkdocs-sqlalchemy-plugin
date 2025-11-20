@@ -26,3 +26,5 @@ In your markdown file:
 ```
 
 Each table documentation will include a collapsible section with the SQL DDL.
+
+## Result
