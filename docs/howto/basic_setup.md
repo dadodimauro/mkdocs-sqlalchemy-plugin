@@ -1,0 +1,26 @@
+# Basic Setup
+
+This recipe demonstrates the most basic configuration to get started with the plugin.
+
+## Configuration
+
+In your `mkdocs.yml`:
+
+```yaml
+plugins:
+  - sqlalchemy:
+      base_class: "basic_setup.models.Base"
+      app_path: "src"
+```
+
+## Usage
+
+In your markdown file (e.g., `index.md`):
+
+```markdown
+# MkDocs SqlAlchemy Plugin
+
+{% sqlalchemy %}
+```
+
+This will generate documentation for all tables found in the `basic_setup.models.Base` metadata.

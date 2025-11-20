@@ -1,0 +1,31 @@
+# Filter Fields
+
+This recipe shows how to customize which columns are displayed in the documentation table. You can choose to show only specific fields like `column`, `type`, and `nullable`.
+
+## Configuration
+
+In your `mkdocs.yml`:
+
+```yaml
+plugins:
+  - sqlalchemy:
+      base_class: "filter_fields.models.Base"
+      app_path: "src"
+      table_style:
+        fields:
+          - column
+          - type
+          - nullable
+```
+
+## Usage
+
+In your markdown file:
+
+```markdown
+# MkDocs SqlAlchemy Plugin
+
+{% sqlalchemy %}
+```
+
+This will generate tables showing only the Column Name, Type, and Nullable status.

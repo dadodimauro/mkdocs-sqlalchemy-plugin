@@ -1,0 +1,28 @@
+# Show SQL DDL
+
+This recipe demonstrates how to include the SQL `CREATE TABLE` statement in your documentation.
+
+## Configuration
+
+In your `mkdocs.yml`:
+
+```yaml
+plugins:
+  - sqlalchemy:
+      base_class: "show_sql.models.Base"
+      app_path: "src"
+      display:
+        show_sql: true
+```
+
+## Usage
+
+In your markdown file:
+
+```markdown
+# MkDocs SqlAlchemy Plugin
+
+{% sqlalchemy %}
+```
+
+Each table documentation will include a collapsible section with the SQL DDL.
