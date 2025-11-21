@@ -101,7 +101,7 @@ class DisplayConfig:
 
     show_indexes: bool = True
     show_constraints: bool = True
-    show_sql: bool = True
+    show_sql: bool = False
     sql_dialect: str = "postgresql"
     group_by_schema: bool = False
 

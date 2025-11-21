@@ -5,6 +5,14 @@
 
 [MkDocs](https://www.mkdocs.org/) plugin to generate docs from SQLAlchemy models.
 
+## Features
+
+- **Automatic Documentation**: Generates tables documenting your SQLAlchemy models.
+- **Customizable**: Configure which fields to show, table styling, and more.
+- **Filtering**: Include or exclude specific tables.
+- **SQL DDL**: Optionally display the SQL `CREATE TABLE` statements.
+- **Schema Support**: Group tables by schema.
+
 ## Installation
 
 Install the plugin using `pip`:
@@ -13,30 +21,35 @@ Install the plugin using `pip`:
 pip install mkdocs-sqlalchemy-plugin
 ```
 
-Next, configure the plugin in your `mkdocs.yml` file:
+## Quick Start
 
-```yml
-plugins:
-  - sqlalchemy:
-      base_class: "my_app.models.Base"
-      app_path: "src"
-```
+1. **Configure `mkdocs.yml`**:
 
-- `base_class`: The Python import path to your SQLAlchemy `DeclarativeBase` class (e.g., `my_app.models.Base`). This class contains the `metadata` object with your table definitions.
-- `app_path`: The directory containing your application code (e.g., `src` or `.`). This path is added to Python's `sys.path` to allow the plugin to import your `base_class`.
+    Add the plugin to your `mkdocs.yml` configuration file. You must specify the `base_class` which is the import path to your SQLAlchemy `DeclarativeBase`.
+
+    ```yaml
+    plugins:
+      - sqlalchemy:
+          base_class: "my_app.models.Base"
+          app_path: "src"
+    ```
+
+2. **Add to Markdown**:
+
+    In your markdown files, use the `sqlalchemy` tag where you want the documentation to appear.
+
+    ```html
+    {% sqlalchemy %}
+    ```
+
+3. **Build Docs**:
+
+    Run `mkdocs serve` to see your documentation.
+
+## Configuration
+
+The plugin offers extensive configuration options to tailor the output to your needs. See the [Configuration Options](configuration.md) page for a full reference.
 
 ## Usage
 
-Now in your markdown file you can use the `sqlalchemy` tag to generate documentation.
-
-### Basic Usage
-
-Generate documentation for all tables found in the metadata:
-
-```html
-{% sqlalchemy %}
-```
-
-### Advanced Usage
-
-For more advanced usage please refer to the documentation of this [project]().
+The `{% sqlalchemy %}` tag is powerful and supports local overrides. See the [Tag Usage](usage.md) page for details.
