@@ -1,7 +1,7 @@
 [project]
 name = "mkdocs-sqlalchemy-plugin"
 version = "0.1.0"
-description = "Add your description here"
+description = "An MkDocs plugin to generate documentation from SQLAlchemy models."
 readme = "README.md"
 authors = [
     { name = "dadodimauro", email = "dadodimauro@gmail.com" }
