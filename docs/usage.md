@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # Tag Usage
 
 The `mkdocs-sqlalchemy-plugin` uses a special tag to inject documentation into your Markdown files.

@@ -1,6 +1,6 @@
 # mkdocs-sqlalchemy-plugin
 
-[![tests](https://github.com/dadodimauro/mkdocs-sqlalchemy-plugin/actions/workflows/test.yml/badge.svg)](https://github.com/dadodimauro/mkdocs-sqlalchemy-plugin/actions/workflows/test.yml) [![documentation](https://img.shields.io/badge/docs-mkdocs-708FCC.svg?style=flat)]() [![codecov](https://codecov.io/github/dadodimauro/mkdocs-sqlalchemy-plugin/graph/badge.svg?token=OZFLQ0U2B6)](https://codecov.io/github/dadodimauro/mkdocs-sqlalchemy-plugin) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/mkdocs-sqlalchemy-plugin) ![PyPI](https://img.shields.io/pypi/v/mkdocs-sqlalchemy-plugin) ![PyPI - Downloads](https://img.shields.io/pypi/dm/mkdocs-sqlalchemy-plugin)
+[![tests](https://github.com/dadodimauro/mkdocs-sqlalchemy-plugin/actions/workflows/test.yml/badge.svg)](https://github.com/dadodimauro/mkdocs-sqlalchemy-plugin/actions/workflows/test.yml) [![documentation](https://img.shields.io/badge/docs-mkdocs-708FCC.svg?style=flat)](https://dadodimauro.github.io/mkdocs-sqlalchemy-plugin/configuration/) [![codecov](https://codecov.io/github/dadodimauro/mkdocs-sqlalchemy-plugin/graph/badge.svg?token=OZFLQ0U2B6)](https://codecov.io/github/dadodimauro/mkdocs-sqlalchemy-plugin) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/mkdocs-sqlalchemy-plugin) ![PyPI](https://img.shields.io/pypi/v/mkdocs-sqlalchemy-plugin) ![PyPI - Downloads](https://img.shields.io/pypi/dm/mkdocs-sqlalchemy-plugin)
 
 
 [MkDocs](https://www.mkdocs.org/) plugin to generate docs from SQLAlchemy models.
@@ -48,8 +48,8 @@ pip install mkdocs-sqlalchemy-plugin
 
 ## Configuration
 
-The plugin offers extensive configuration options to tailor the output to your needs. See the [Configuration Options](configuration.md) page for a full reference.
+The plugin offers extensive configuration options to tailor the output to your needs. See the [Configuration Options](https://dadodimauro.github.io/mkdocs-sqlalchemy-plugin/configuration/) page for a full reference.
 
 ## Usage
 
-The `{% sqlalchemy %}` tag is powerful and supports local overrides. See the [Tag Usage](usage.md) page for details.
+The `{% sqlalchemy %}` tag is powerful and supports local overrides. See the [Tag Usage](https://dadodimauro.github.io/mkdocs-sqlalchemy-plugin/usage/) page for details.
