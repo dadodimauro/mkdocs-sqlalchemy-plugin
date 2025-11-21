@@ -1,0 +1,74 @@
+site_name: "mkdocs-sqlalchemy-plugin"
+site_description: "MkDocs plugin to generate docs from SQLAlchemy models"
+use_directory_urls: true
+repo_url: https://github.com/dadodimauro/mkdocs-sqlalchemy-plugin
+repo_name: "mkdocs-sqlalchemy-plugin"
+site_author: "Davide Di Mauro"
+
+theme:
+  name: material
+  favicon: img/favicon.svg
+  icon:
+    logo: material/database-eye
+    repo: fontawesome/brands/github
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: black
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - content.code.annotate
+    - content.code.copy
+    - content.footnote.tooltips
+    - content.tabs.link
+    - content.tooltips
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+
+plugins:
+  - search
+  - gen-files:
+      scripts:
+        - scripts/update_howto_examples.py
+
+markdown_extensions:
+  - toc: null
+  - tables
+  - def_list
+  - admonition
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.details
+  - pymdownx.keys
+  - pymdownx.superfences
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji ""
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg ""
+  - md_in_html
+  - pymdownx.blocks.caption
+
+nav:
+  - Home: index.md
+  - Usage: usage.md
+  - Configuration: configuration.md
+  - How to:
+      - Basic Setup: howto/basic_setup.md
+      - Single Tables: howto/single_tables.md
+      - By Schema: howto/by_schema.md
+      - Filter Fields: howto/filter_fields.md
+      - Show SQL DDL: howto/show_sql.md
+      - Table Styling: howto/table_style.md
+  
