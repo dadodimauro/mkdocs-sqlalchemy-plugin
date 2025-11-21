@@ -29,7 +29,7 @@ jobs:
         run: uv sync --dev
 
       - name: Build MkDocs
-        run: mkdocs build --clean
+        run: uv run mkdocs build --clean
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v4
