@@ -14,6 +14,7 @@ from mkdocs_sqlalchemy_plugin.config import (
     DEFAULT_CROSS,
     DEFAULT_FIELDS,
     DEFAULT_TICK,
+    MERMAID_TAG_PATTERN,
     TAG_PATTERN,
     DisplayConfig,
     FilterConfig,
@@ -27,6 +28,7 @@ from mkdocs_sqlalchemy_plugin.config import (
 from mkdocs_sqlalchemy_plugin.markdown import (
     SqlAlchemyPluginContext,
     generate_content_from_params,
+    generate_mermaid_from_params,
 )
 from mkdocs_sqlalchemy_plugin.utils import match_tag_regex, parse_tag_parameters
 
@@ -294,29 +296,51 @@ class SqlAlchemyPlugin(BasePlugin[SqlAlchemyPluginConfig]):  # pragma: no cover
 
         logger.debug(f"Processing page: {page.file.src_path}")
         matches = match_tag_regex(markdown, TAG_PATTERN)
+        mermaid_matches = match_tag_regex(markdown, MERMAID_TAG_PATTERN)
+        all_matches = [("sqlalchemy", m) for m in matches] + [
+            ("mermaid", m) for m in mermaid_matches
+        ]
 
-        if not matches:
-            logger.debug(f"No SQLAlchemy tags found in page: {page.file.src_path}")
+        if not all_matches:
+            logger.debug(f"No tags found in page: {page.file.src_path}")
             return None
 
         logger.info(
             f"Found {len(matches)} SQLAlchemy tag(s) in page: {page.file.src_path}"
+        )
+        logger.info(
+            f"Found {len(mermaid_matches)} SQLAlchemy Mermaid tag(s) in page: {page.file.src_path}"
         )
 
         updated_markdown = markdown
         success_count = 0
         error_count = 0
 
-        # Process matches in reverse order to avoid index shifting
-        for idx, match in enumerate(reversed(matches), 1):
+        # Sort by match start index descending to avoid index shifting
+        all_matches.sort(key=lambda x: x[1].span()[0], reverse=True)
+
+        for idx, (tag_type, match) in enumerate(all_matches, 1):
             tag_params_str = match.group(1)
-            logger.debug(f"Processing tag {idx}/{len(matches)}: {tag_params_str}")
+            logger.debug(
+                f"Processing tag {idx}/{len(matches)}: {tag_params_str} (type: {tag_type})"
+            )
 
             try:
                 tag_params = parse_tag_parameters(tag_params_str)
                 logger.debug(f"  Parsed parameters: {tag_params}")
 
-                replacement = generate_content_from_params(self._context, tag_params)
+                match tag_type:
+                    case "sqlalchemy":
+                        replacement = generate_content_from_params(
+                            self._context, tag_params
+                        )
+                    case "mermaid":
+                        replacement = generate_mermaid_from_params(
+                            self._context, tag_params
+                        )
+                    case _:
+                        raise ValueError(f"Unknown tag type: {tag_type}")
+
                 start, end = match.span()
                 updated_markdown = (
                     updated_markdown[:start] + replacement + updated_markdown[end:]

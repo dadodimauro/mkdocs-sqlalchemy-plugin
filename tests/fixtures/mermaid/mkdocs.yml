@@ -1,0 +1,14 @@
+site_name: Test SQLAlchemy Plugin
+site_description: Testing the SQLAlchemy documentation plugin
+
+theme:
+  name: material
+
+plugins:
+  - mermaid2
+  - sqlalchemy:
+      base_class: "mermaid.models.Base"
+      app_path: "src"
+
+nav:
+  - Home: index.md

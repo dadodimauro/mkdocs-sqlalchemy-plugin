@@ -501,3 +501,81 @@ def generate_content_from_params(
         options=options,
         sort_by=sort_by,
     )
+
+
+def generate_mermaid_from_params(
+    context: SqlAlchemyPluginContext, params: dict[str, int | str | bool]
+) -> str:
+    """Generate mermaid ER diagram based on tag parameters, including relationships."""
+
+    logger.debug(f"Generating mermaid diagram from parameters: {params}")
+
+    include_tables = parse_table_list(str(params.get("include_tables", "")))
+    exclude_tables = parse_table_list(str(params.get("exclude_tables", "")))
+
+    filtered_tables = context.get_filtered_tables(
+        include_tables=include_tables, exclude_tables=exclude_tables
+    )
+
+    if not filtered_tables:
+        logger.warning("No tables match the filter criteria for mermaid diagram")
+        return "<!-- No tables to include in mermaid diagram -->"
+
+    lines = ["```mermaid", "erDiagram"]
+
+    def _full_table_name(table: SaTable) -> str:
+        return (
+            f"{table.schema}__{table.name}"
+            if table.schema and context.plugin_config.display.group_by_schema
+            else table.name
+        )
+
+    # Table definitions
+    for table in filtered_tables:
+        lines.append(f"    {_full_table_name(table)} {{")
+        for column in table.columns:
+            lines.append(f"        {column.type} {column.name}")
+        lines.append("    }")
+
+    # Relationships
+    relationships = set()
+    table_names = {_full_table_name(t) for t in filtered_tables}
+    for table in filtered_tables:
+        for column in table.columns:
+            for fk in column.foreign_keys:
+                ref_table = fk.column.table
+                ref_table_name = _full_table_name(ref_table)
+                this_table_name = _full_table_name(table)
+                if ref_table_name in table_names:
+                    # Determine relationship type
+                    if column.primary_key and column.unique:
+                        rel_type = "||--||"  # one-to-one
+                    elif column.unique:
+                        rel_type = "||--o{"  # one-to-many
+                    else:
+                        rel_type = "}o--||"  # many-to-one (default)
+                    rel = f'    {this_table_name} {rel_type} {ref_table_name} : "{column.name}"'
+                    relationships.add(rel)
+
+    # Detect many-to-many (association tables)
+    for table in filtered_tables:
+        fk_columns = [col for col in table.columns if col.foreign_keys]
+        if len(fk_columns) == 2 and set([col.name for col in fk_columns]) == set(
+            [pk.name for pk in table.primary_key.columns]
+        ):
+            fk_tables = [
+                _full_table_name(list(col.foreign_keys)[0].column.table)
+                for col in fk_columns
+            ]
+            rel = f"    {fk_tables[0]} " + "}o--o{" + f' {fk_tables[1]} : "association"'
+            relationships.add(rel)
+
+    lines.extend(sorted(relationships))
+    lines.append("```")
+
+    result = "\n".join(lines)
+    logger.info(
+        f"Successfully generated mermaid diagram for {len(filtered_tables)} table(s) "
+        f"({len(result)} characters)"
+    )
+    return result

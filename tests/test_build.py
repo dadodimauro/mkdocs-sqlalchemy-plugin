@@ -290,3 +290,70 @@ def test_show_sql(tmp_path: Path) -> None:
     assert "posts" in content, "Post model not documented."
     assert "user_profiles" in content, "UserProfile model not documented."
     assert "View SQL" in content, "Expected SQL DDL not found in documentation."
+
+
+def test_mermaid(tmp_path: Path) -> None:
+    project_path = setup_clean_mkdocs_folder(Path("tests/fixtures/mermaid"), tmp_path)
+
+    result = build_docs_setup(project_path)
+    assert result.exit_code == 0, (
+        f"Build failed with exit code {result.exit_code}: {result.output}"
+    )
+
+    output_dir = project_path / "site"
+    assert output_dir.exists(), "Output directory does not exist."
+
+    models_page = output_dir / "index.html"
+    assert models_page.exists(), "Models page was not generated."
+
+    content = models_page.read_text(encoding="utf-8")
+    assert 'div class="mermaid"' in content, (
+        "Mermaid diagram not found in documentation."
+    )
+
+
+def test_mermaid_schema(tmp_path: Path) -> None:
+    project_path = setup_clean_mkdocs_folder(
+        Path("tests/fixtures/mermaid_schema"), tmp_path
+    )
+
+    result = build_docs_setup(project_path)
+    assert result.exit_code == 0, (
+        f"Build failed with exit code {result.exit_code}: {result.output}"
+    )
+
+    output_dir = project_path / "site"
+    assert output_dir.exists(), "Output directory does not exist."
+
+    models_page = output_dir / "index.html"
+    assert models_page.exists(), "Models page was not generated."
+
+    content = models_page.read_text(encoding="utf-8")
+    assert 'div class="mermaid"' in content, (
+        "Mermaid diagram not found in documentation."
+    )
+
+
+def test_mermaid_not_found(tmp_path: Path) -> None:
+    project_path = setup_clean_mkdocs_folder(
+        Path("tests/fixtures/mermaid_table_not_found"), tmp_path
+    )
+
+    result = build_docs_setup(project_path)
+    assert result.exit_code == 0, (
+        f"Build failed with exit code {result.exit_code}: {result.output}"
+    )
+
+    output_dir = project_path / "site"
+    assert output_dir.exists(), "Output directory does not exist."
+
+    models_page = output_dir / "index.html"
+    assert models_page.exists(), "Models page was not generated."
+
+    content = models_page.read_text(encoding="utf-8")
+    assert "<!-- No tables to include in mermaid diagram -->" in content, (
+        "Expected 'not found' comment"
+    )
+    assert 'div class="mermaid"' not in content, (
+        "Mermaid diagram not found in documentation."
+    )

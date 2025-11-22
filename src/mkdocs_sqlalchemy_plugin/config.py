@@ -41,6 +41,17 @@ This pattern enforces that:
 - The tag must be properly formatted: {% sqlalchemy ... %}
 """
 
+MERMAID_TAG_PATTERN = r"\{%\s*sqlalchemy-mermaid(?:\s+([^%]+?))?\s*%\}"
+"""
+Regex pattern for matching SQLAlchemy Mermaid tags.
+
+Captures everything between {{ sqlalchemy-mermaid: and }}.
+This pattern enforces that:
+- String parameters must have quotes: key="value"
+- Boolean parameters must not have quotes: key=true or key=false
+- The tag must be properly formatted: {% sqlalchemy-mermaid ... %}
+"""
+
 
 @dataclass
 class TableStyleConfig:
